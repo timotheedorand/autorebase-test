@@ -1,0 +1,16 @@
+name: PR lint
+
+on:
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize']
+
+jobs:
+  pr-lint:
+    runs-on: ubuntu-latest
+    if: startsWith(github.base_ref, 'release') || github.base_ref == 'main' && (!startsWith(github.head_ref, 'master') && !startsWith(github.head_ref, 'main') && !startsWith(github.head_ref, 'ci'))
+    steps:
+      - uses: seferov/pr-lint-action@master
+        with:
+          title-regex: '(\[ND-\d+\]|ND-\d+) .*'
+          title-regex-flags: 'g' # optional
+          error-message: 'Your PR title does not match the required format. Please follow the pattern: [ND-####] <description> or ND-####: <description>'

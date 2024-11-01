@@ -1,0 +1,22 @@
+name: Auto-update
+# Auto-update only listens to `push` events.
+# If a pull request is already outdated when enabling auto-merge, manually click on the "Update branch" button a first time to avoid having to wait for another commit to land on the base branch for the pull request to be updated.
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Auto:
+    name: Auto-update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate App token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: tibdex/auto-update@v2.2.1
+        with:
+          github_token: ${{ steps.app-token.outputs.token }}
